@@ -1,0 +1,15 @@
+name: centinel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: install
+        run: npm install
+        
+      - name: do it!
+        run: npm run do-it
