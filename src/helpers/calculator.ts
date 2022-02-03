@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { Member, MEMBERS } from "../constants";
-import { getRemainingDaysCountForThisMonth } from "../utils/date";
+import { getRemainingDaysCountForThisMonth } from "./date";
 
 export function getSentinels() {
   const remainingDaysCountForThisMonth =  getRemainingDaysCountForThisMonth();

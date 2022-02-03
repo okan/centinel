@@ -1,4 +1,7 @@
-export function getHtmlOutput(list: Array<{ date:string, name:string }>) {
+import { OutputGenerator } from '.';
+
+export class HtmlOutputGenerator implements OutputGenerator {
+  generate(list: { date: string; name: string; }[]): string {
     return `
         <!DOCTYPE html>
         <html>
@@ -60,4 +63,5 @@ export function getHtmlOutput(list: Array<{ date:string, name:string }>) {
         </body>
         </html>
     `;
+  }
 }
