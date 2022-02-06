@@ -1,7 +1,8 @@
 import { OutputGenerator } from '.';
+import { Sentinel } from '../constants';
 
 export class HtmlOutputGenerator implements OutputGenerator {
-  generate(list: { date: string; name: string; }[]): string {
+  generate(sentinels: Sentinel[]): string {
     return `
         <!DOCTYPE html>
         <html>
@@ -52,10 +53,10 @@ export class HtmlOutputGenerator implements OutputGenerator {
             <div class="container">
                 <h1>Nöbetçiler</h1>
                 <ul>
-                ${list.map(el => `
+                ${sentinels.map(el => `
                     <li>
                         <span>${el.date}</span>
-                        <span>${el.name}</span>
+                        <span>${el.member.name}</span>
                     </li>
                 `).join('')}
                 </ul>

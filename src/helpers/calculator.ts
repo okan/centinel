@@ -1,29 +1,47 @@
 import _ from "lodash";
-import { Member, MEMBERS } from "../constants";
-import { getRemainingDaysCountForThisMonth } from "./date";
+import { Member, Sentinel } from "../constants";
+import { getDateAsStringForIndex, getRemainingDaysCountForThisMonth, getTimestampForIndex } from "./date";
 
-export function getSentinels() {
-  const remainingDaysCountForThisMonth =  getRemainingDaysCountForThisMonth();
+function getShuffledMemberListForRemainingDaysCount(members: Member[], remainingDaysCount: number) {
+  const membersLength = members.length;
 
-  let sentinels: Member[] = [];
+  if (remainingDaysCount < membersLength) {
+    return _.shuffle(members).slice(0, remainingDaysCount);
+  }
 
-  if (remainingDaysCountForThisMonth < MEMBERS.length) {
-    sentinels = _.shuffle(MEMBERS).slice(0, remainingDaysCountForThisMonth);
-  } else {
-    let _remainingDays = remainingDaysCountForThisMonth;
-    let _sentinels = [];
-    while (_remainingDays > 0) {
-      const _lastMember = _.last(sentinels);
-      const _sliceCount =
-        _remainingDays < MEMBERS.length ? _remainingDays : MEMBERS.length;
-      _sentinels = _.shuffle(MEMBERS).slice(0, _sliceCount);
+  let _remainingDays = remainingDaysCount;
+  let memberList: Member[] = [];
+  let _memberList: Member[] = [];
 
-      if (_lastMember?.id !== _.first(_sentinels)!.id) {
-        sentinels = [...sentinels, ..._sentinels];
-        _remainingDays -= _sliceCount;
-      }
+  while (_remainingDays > 0) {
+    const _lastMember = _.last(memberList);
+    const _sliceCount =
+      _remainingDays < membersLength ? _remainingDays : membersLength;
+    _memberList = _.shuffle(members).slice(0, _sliceCount);
+
+    if (_lastMember?.id !== _.first(_memberList)!.id) {
+      memberList = [...memberList, ..._memberList];
+      _remainingDays -= _sliceCount;
     }
   }
 
-  return sentinels;
+  return memberList;
+}
+
+function getShuffledMemberList(members: Member[]) {
+  const remainingDaysCountForThisMonth =  getRemainingDaysCountForThisMonth();
+
+  return getShuffledMemberListForRemainingDaysCount(members, remainingDaysCountForThisMonth);
+}
+
+export function getSentinelListForThisMonth(members: Member[]) : Sentinel[] {
+  const shuffledMemberList = getShuffledMemberList(members);
+
+  return shuffledMemberList.map((member, index) => {
+    return {
+      member,
+      date: getDateAsStringForIndex(index),
+      timestamp: getTimestampForIndex(index)
+    }
+});
 }

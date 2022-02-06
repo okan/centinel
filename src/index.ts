@@ -1,27 +1,13 @@
-import dayjs from "dayjs";
 import fs from 'fs';
-import { getSentinels } from "./helpers/calculator";
-import { HtmlOutputGenerator, JSONOutputGenerator } from './outputGenerators';
+import { MEMBERS, OutputTypes } from './constants';
+import { getSentinelListForThisMonth } from "./helpers/calculator";
 
-const htmlGenerator = new HtmlOutputGenerator();
-const jsonGenerator = new JSONOutputGenerator();
+const sentinels = getSentinelListForThisMonth(MEMBERS);
 
-const sentinels = getSentinels();
-
-const list = sentinels.map((sentinel, index) => {
-    return {
-        date: dayjs().add(index + 1, 'day').format('DD/MM/YYYY').toString(),
-        name: sentinel.name
-    }
-});
-
-const htmlOutput = htmlGenerator.generate(list);
-const jsonOutput = jsonGenerator.generate(list);
-
-fs.writeFile('artifacts/sentinels.html', htmlOutput, (err) => {
-    if(err) console.log(err.message);
-});
-
-fs.writeFile('artifacts/sentinels.json', jsonOutput, (err) => {
-    if(err) console.log(err.message);
+OutputTypes.forEach(outputType => {
+    var generator = new outputType.Generator();
+    
+    fs.writeFile(`artifacts/${outputType.FileName}`, generator.generate(sentinels), (err) => {
+        if(err) console.log(err.message);
+    });
 });

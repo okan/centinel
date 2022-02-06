@@ -1,5 +1,7 @@
+import { Sentinel } from '../constants';
+
 export interface OutputGenerator {
-  generate(list: Array<{ date:string, name:string }>) : string
+  generate(sentinels: Sentinel[]) : string
 }
 
 export { HtmlOutputGenerator } from './html';
